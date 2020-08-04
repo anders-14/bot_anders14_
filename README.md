@@ -5,3 +5,7 @@ A twitch chat bot written in go
 ## Commands
 
 <https://bot-anders14-commands.vercel.app>
+
+## TODO
+
+- A lot...
