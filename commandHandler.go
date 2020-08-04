@@ -35,6 +35,10 @@ func ParseCommand(message *Message) *Command {
 Exec -> executes the command
 */
 func (c *Command) Exec(client *Client) {
+	if c.name == "commands" {
+		client.SendMessage("You can find all commands and a description of them at bot-anders14-commands.vercel.app")
+	}
+
 	if c.name == "ping" {
 		client.SendMessage("Pong @" + c.user.displayname)
 		return
