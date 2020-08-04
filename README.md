@@ -1,3 +1,7 @@
-# Go Twitch Bot
+# bot_anders14_
 
-A shit bot with shit jokes written in go
+A twitch chat bot written in go
+
+## Commands
+
+Go, see what i did there, to <bot-anders14-commands.vercel.app>
