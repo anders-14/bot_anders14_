@@ -52,8 +52,10 @@ func (c *Command) Exec(client *Client) {
 
 	if c.name == "rps" {
 		if len(c.args) > 0 {
-			botMove := PlayRPS(c.args[0])
-			client.SendMessage(botMove + " @" + c.user.displayname)
+			gameString := PlayRPS(c.args[0])
+			if gameString != "" {
+				client.SendMessage(gameString + " @" + c.user.displayname)
+			}
 		}
 		return
 	}
@@ -74,5 +76,10 @@ func (c *Command) Exec(client *Client) {
 		roll := rand.Intn(6) + 1
 		rolledmsg := fmt.Sprintf("You rolled a %d @%s", roll, c.user.displayname)
 		client.SendMessage(rolledmsg)
+	}
+
+	if c.name == "color" {
+		msg := fmt.Sprintf("Your color is %s @%s", c.user.color, c.user.displayname)
+		client.SendMessage(msg)
 	}
 }
