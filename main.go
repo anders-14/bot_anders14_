@@ -17,7 +17,6 @@ func main() {
 	botName := os.Getenv("BOT_NAME")
 	botOauth := os.Getenv("BOT_OAUTH")
 	channelName := "#" + os.Getenv("CHANNEL")
-	fmt.Println(botName, botOauth, channelName)
 
 	client := NewClient(botName, botOauth, channelName)
 
