@@ -4,4 +4,4 @@ A twitch chat bot written in go
 
 ## Commands
 
-Go, see what i did there, to <bot-anders14-commands.vercel.app>
+<https://bot-anders14-commands.vercel.app>
