@@ -31,4 +31,11 @@ var Commands = [...]Command{
 			c.SendMessage(joke)
 		},
 	},
+	{
+		name: "today",
+		exec: func(c *Client, pc *ParsedCommand) {
+			trivia := FetchTodayTrivia().trivia
+			c.SendMessage(trivia)
+		},
+	},
 }
