@@ -24,4 +24,11 @@ var Commands = [...]Command{
 			c.SendMessage(msg)
 		},
 	},
+	{
+		name: "joke",
+		exec: func(c *Client, pc *ParsedCommand) {
+			joke := FetchJoke().Joke
+			c.SendMessage(joke)
+		},
+	},
 }
