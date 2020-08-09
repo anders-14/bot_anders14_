@@ -92,8 +92,8 @@ func (c *Client) HandleChat() {
 			c.DisplayMessage(message)
 
 			if message.isCommand {
-				cmd := ParseCommand(message)
-				cmd.Exec(c)
+				parsedCommand := ParseMessageToCommand(message)
+				HandleCommand(c, parsedCommand)
 			}
 		}
 
