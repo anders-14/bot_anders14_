@@ -13,8 +13,9 @@ type ParsedCommand struct {
 
 // ParseMessageToCommand -> parses a Message to a ParsedCommand
 func ParseMessageToCommand(m *Message) *ParsedCommand {
+  prefixLen := len(*commandPrefix)
 	splitMessage := strings.Split(m.content, " ")
-	name := strings.ToLower(splitMessage[0][1:])
+	name := strings.ToLower(splitMessage[0][prefixLen:])
 	args := splitMessage[1:]
 	return &ParsedCommand{
 		name: name,

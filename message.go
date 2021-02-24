@@ -39,7 +39,7 @@ func ParseMessage(message string, channel string) *Message {
 	content := contentRegex.FindStringSubmatch(message)[1]
 
 	// Is the message a command
-	isCommand := strings.HasPrefix(content, "!")
+	isCommand := strings.HasPrefix(content, *commandPrefix)
 
 	// Gets the user-tags
 	tagsRegex := regexp.MustCompile(`(@.+):\w+!`)
