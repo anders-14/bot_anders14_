@@ -8,17 +8,13 @@ import (
 	"time"
 )
 
-/*
-JokeResponse -> object holding info about the response from the dad joke api
-*/
+// JokeResponse -> object holding info about the response from the dad joke api
 type JokeResponse struct {
 	ID   string `json:"id"`
 	Joke string `json:"joke"`
 }
 
-/*
-FetchJoke -> fetches a dad joke from the dad joke api
-*/
+// FetchJoke -> fetches a dad joke from the dad joke api
 func FetchJoke() JokeResponse {
 	joke := JokeResponse{}
 	url := "https://icanhazdadjoke.com/"

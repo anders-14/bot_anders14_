@@ -4,17 +4,13 @@ import (
 	"fmt"
 )
 
-/*
-Command -> object storing the name and the function of a command
-*/
+// Command -> object storing the name and the function of a command
 type Command struct {
 	name string
 	exec func(c *Client, pc *ParsedCommand)
 }
 
-/*
-Commands -> array containing all the commands
-*/
+// Commands -> array containing all the commands
 var Commands = [...]Command{
 	{
 		name: "commands",

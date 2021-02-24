@@ -7,10 +7,8 @@ import (
 	"time"
 )
 
-/*
-TodayTrivia -> object holding info about
-todays trivia
-*/
+// TodayTrivia -> object holding info about
+// todays trivia
 type TodayTrivia struct {
 	today  string
 	trivia string
@@ -21,9 +19,7 @@ func getCurrentMonthAndDate() string {
 	return fmt.Sprintf("%d/%d", int(month), day)
 }
 
-/*
-FetchTodayTrivia -> fetching trivia from the current day
-*/
+// FetchTodayTrivia -> fetching trivia from the current day
 func FetchTodayTrivia() *TodayTrivia {
 	baseURL := "http://numbersapi.com/"
 	today := getCurrentMonthAndDate()

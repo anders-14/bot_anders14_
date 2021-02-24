@@ -3,15 +3,14 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"net"
 	"net/textproto"
 	"strings"
 	"time"
 )
 
-/*
-Client -> object holding info about the connection
-*/
+// Client object holding info about the connection
 type Client struct {
 	server  string
 	port    string
@@ -21,9 +20,7 @@ type Client struct {
 	conn    net.Conn
 }
 
-/*
-NewClient -> generates a new Client object
-*/
+// NewClient, function generating new client
 func NewClient(nick string, oAuth string, channel string) *Client {
 	return &Client{
 		server:  "irc.chat.twitch.tv",
@@ -31,12 +28,11 @@ func NewClient(nick string, oAuth string, channel string) *Client {
 		nick:    nick,
 		oAuth:   oAuth,
 		channel: channel,
-		conn:    nil}
+		conn:    nil,
+	}
 }
 
-/*
-Connect -> creates a connection between the client and the server
-*/
+// Connect connects the client to the channel
 func (c *Client) Connect() {
 	if c.conn != nil {
 		c.Close()
@@ -53,17 +49,13 @@ func (c *Client) Connect() {
 	fmt.Printf("Successfully connected to %s\n", c.server)
 }
 
-/*
-Close -> closes the clients connection to the server
-*/
+// Close closes the clients connection
 func (c *Client) Close() {
 	c.conn.Close()
 	fmt.Printf("Closed the connection to %s\n", c.server)
 }
 
-/*
-Login -> logs the client into the channels
-*/
+// Login logs the client into the server
 func (c *Client) Login() {
 	fmt.Fprintf(c.conn, "PASS %s\n", c.oAuth)
 	fmt.Fprintf(c.conn, "NICK %s\n", c.nick)
@@ -75,15 +67,14 @@ func (c *Client) Login() {
 	fmt.Fprintf(c.conn, "CAP REQ :twitch.tv/tags\n")
 }
 
-/*
-HandleChat -> handles incomming chats from the server
-*/
+// HandleChat handles incomming chat messages
 func (c *Client) HandleChat() {
 	proto := textproto.NewReader(bufio.NewReader(c.conn))
 
 	for {
 		line, err := proto.ReadLine()
 		if err != nil {
+			log.Fatalln(err)
 			break
 		}
 
@@ -103,16 +94,12 @@ func (c *Client) HandleChat() {
 	}
 }
 
-/*
-DisplayMessage -> displays the formatted message in the console
-*/
+// DisplayMessage displays incomming messages to the terminal
 func (c *Client) DisplayMessage(msg *Message) {
 	fmt.Printf("%s %s: %s\n", msg.channel, msg.user.displayname, msg.content)
 }
 
-/*
-SendMessage -> sends a message to the channel
-*/
+// SendMessage sends message to chat
 func (c *Client) SendMessage(msg string) {
 	if msg != "" {
 		fmt.Fprintf(c.conn, "PRIVMSG "+c.channel+" :"+msg+"\n")

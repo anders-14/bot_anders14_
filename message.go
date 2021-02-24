@@ -6,9 +6,7 @@ import (
 	"strings"
 )
 
-/*
-Message -> object holding info about a message
-*/
+// Message holding info about a message
 type Message struct {
 	channel   string
 	content   string
@@ -16,9 +14,7 @@ type Message struct {
 	user      User
 }
 
-/*
-User -> object holding info about a user
-*/
+// User holding info about the user
 type User struct {
 	badges        []Badge
 	isBroadcaster bool
@@ -30,18 +26,13 @@ type User struct {
 	username      string
 }
 
-/*
-Badge -> object holding info about a badge
-*/
+// Badge holding info about a badge
 type Badge struct {
 	name  string
 	value string
 }
 
-/*
-ParseMessage -> parsing the message from twitch
-and returning the parsed message object
-*/
+// ParseMessage parsing message and returning parsed message
 func ParseMessage(message string, channel string) *Message {
 	// Gets the message contents
 	contentRegex := regexp.MustCompile(`PRIVMSG\s#\w+\s:(.+)`)
@@ -65,9 +56,7 @@ func ParseMessage(message string, channel string) *Message {
 		user:      *user}
 }
 
-/*
-UserFromTags -> gets a user object from tags
-*/
+// UserFromTags gets user from tags
 func UserFromTags(tags []string) *User {
 	tagMap := make(map[string]string)
 

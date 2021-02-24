@@ -7,9 +7,7 @@ import (
 
 var moves [3]string = [3]string{"rock", "paper", "scissors"}
 
-/*
-PlayRPS -> plays rps against the user
-*/
+// PlayRPS -> plays rps against the user
 func PlayRPS(usermove string) string {
 	usermove = strings.ToLower(usermove)
 	if invalidUserMove(usermove) {
