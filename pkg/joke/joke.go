@@ -1,4 +1,4 @@
-package main
+package joke
 
 import (
 	"encoding/json"

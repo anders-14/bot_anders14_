@@ -88,7 +88,7 @@ func (c *Client) HandleChat() {
 			}
 		}
 
-		if strings.Contains(line, "PING") {
+    if strings.Contains(line, "PING :tmi.twitch.tv") {
 			fmt.Fprintf(c.conn, "PONG :tmi.twitch.tv\n")
 		}
 	}
