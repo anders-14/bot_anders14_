@@ -31,12 +31,12 @@ var Commands = map[string]func(c *Client, pc *ParsedCommand){
 	},
 
 	"rps": func(c *Client, pc *ParsedCommand) {
-    if len(pc.args) < 1 {
-      return
-    }
+		if len(pc.args) < 1 {
+			return
+		}
 		usermove := pc.args[0]
-    msg := rps.Play(usermove, pc.user.displayname)
-    c.SendMessage(msg)
+		msg := rps.Play(usermove, pc.user.displayname)
+		c.SendMessage(msg)
 	},
 
 	"today": func(c *Client, pc *ParsedCommand) {

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-  BASE_URL = "http://numbersapi.com/"
+	BASE_URL = "http://numbersapi.com/"
 )
 
 func currentDate() string {
