@@ -30,7 +30,6 @@ func HandleCommand(c *Client, pc *ParsedCommand) {
 	if f, ok := Commands[pc.name]; ok {
 		f(c, pc)
 	} else {
-		errMsg := fmt.Sprintf("%s is not a command", pc.name)
-		c.SendMessage(errMsg)
+    fmt.Printf("Error: %s is not a command\n", pc.name)
 	}
 }
