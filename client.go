@@ -20,20 +20,7 @@ type Client struct {
 	conn    net.Conn
 }
 
-// NewClient, function generating new client
-func NewClient(nick string, oAuth string, channel string) *Client {
-	return &Client{
-		server:  "irc.chat.twitch.tv",
-		port:    "6667",
-		nick:    nick,
-		oAuth:   oAuth,
-		channel: channel,
-		conn:    nil,
-	}
-}
-
-// Connect connects the client to the channel
-func (c *Client) Connect() {
+func (c *Client) connect() {
 	if c.conn != nil {
 		c.Close()
 	}
@@ -44,19 +31,12 @@ func (c *Client) Connect() {
 	if err != nil {
 		fmt.Printf("Could not connect to %s, retrying in 5 seconds...\n", c.server)
 		time.Sleep(time.Second * 5)
-		c.Connect()
+		c.connect()
 	}
 	fmt.Printf("Successfully connected to %s\n", c.server)
 }
 
-// Close closes the clients connection
-func (c *Client) Close() {
-	c.conn.Close()
-	fmt.Printf("Closed the connection to %s\n", c.server)
-}
-
-// Login logs the client into the server
-func (c *Client) Login() {
+func (c *Client) login() {
 	fmt.Fprintf(c.conn, "PASS %s\n", c.oAuth)
 	fmt.Fprintf(c.conn, "NICK %s\n", c.nick)
 
@@ -67,6 +47,12 @@ func (c *Client) Login() {
 	fmt.Fprintf(c.conn, "CAP REQ :twitch.tv/tags\n")
 }
 
+// Close closes the clients connection
+func (c *Client) Close() {
+	c.conn.Close()
+	fmt.Printf("Closed the connection to %s\n", c.server)
+}
+
 // HandleChat handles incomming chat messages
 func (c *Client) HandleChat() {
 	proto := textproto.NewReader(bufio.NewReader(c.conn))
@@ -74,12 +60,14 @@ func (c *Client) HandleChat() {
 	for {
 		line, err := proto.ReadLine()
 		if err != nil {
-			log.Fatalln(err)
+      log.Fatalf("err: %s", err)
 			break
 		}
 
+    fmt.Println(line)
+
 		if strings.Contains(line, "PRIVMSG") {
-			message := ParseMessage(line, c.channel)
+			message := ParseMessage(line)
 			c.DisplayMessage(message)
 
 			if message.isCommand {
@@ -104,4 +92,21 @@ func (c *Client) SendMessage(msg string) {
 	if msg != "" {
 		fmt.Fprintf(c.conn, "PRIVMSG "+c.channel+" :"+msg+"\n")
 	}
+}
+
+// NewClient, function generating new client
+func NewClient(nick string, oAuth string, channel string) *Client {
+  c := Client{
+		server:  "irc.chat.twitch.tv",
+		port:    "6667",
+		nick:    nick,
+		oAuth:   oAuth,
+		channel: channel,
+		conn:    nil,
+	}
+
+  c.connect()
+  c.login()
+
+  return &c
 }

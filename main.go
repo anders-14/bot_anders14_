@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -24,11 +25,8 @@ func main() {
 	botName := os.Getenv("BOT_NAME")
 	botOauth := os.Getenv("BOT_OAUTH")
 
-	client := NewClient(botName, botOauth, "#"+*channelName)
-
-	client.Connect()
-	defer client.Close()
-	client.Login()
+	client := NewClient(botName, botOauth, fmt.Sprintf("#%s", *channelName))
+  defer client.Close()
 
 	client.HandleChat()
 }
