@@ -12,52 +12,53 @@ import (
 	"github.com/anders-14/bot_anders14_/pkg/parser"
 )
 
+var (
+  server string = "irc.chat.twitch.tv"
+  port string = "6667"
+)
+
 // Client object holding info about the connection
 type Client struct {
-	server  string
-	port    string
-	nick    string
-	oAuth   string
-	channel string
-	conn    net.Conn
+	Nick    string
+	Conn    net.Conn
 }
 
 func (c *Client) connect() {
-	if c.conn != nil {
+	if c.Conn != nil {
 		c.Close()
 	}
 
 	var err error
-	fmt.Printf("Connecting to %s...\n", c.server)
-	c.conn, err = net.Dial("tcp", c.server+":"+c.port)
+	fmt.Printf("Connecting to %s...\n", server)
+	c.Conn, err = net.Dial("tcp", server+":"+port)
 	if err != nil {
-		fmt.Printf("Could not connect to %s, retrying in 5 seconds...\n", c.server)
+		fmt.Printf("Could not connect to %s, retrying in 5 seconds...\n", server)
 		time.Sleep(time.Second * 5)
 		c.connect()
 	}
-	fmt.Printf("Successfully connected to %s\n", c.server)
+	fmt.Printf("Successfully connected to %s\n", server)
 }
 
-func (c *Client) login() {
-	fmt.Fprintf(c.conn, "PASS %s\n", c.oAuth)
-	fmt.Fprintf(c.conn, "NICK %s\n", c.nick)
+func (c *Client) login(pass, channel string) {
+	fmt.Fprintf(c.Conn, "PASS %s\n", pass)
+	fmt.Fprintf(c.Conn, "NICK %s\n", c.Nick)
 
-	fmt.Fprintf(c.conn, "JOIN %s\n", c.channel)
-	fmt.Printf("Joined %s\n\n", c.channel)
+	fmt.Fprintf(c.Conn, "JOIN %s\n", channel)
+	fmt.Printf("Joined %s\n\n", channel)
 
 	// Getting tags with the messages
-	fmt.Fprintf(c.conn, "CAP REQ :twitch.tv/tags\n")
+	fmt.Fprintf(c.Conn, "CAP REQ :twitch.tv/tags\n")
 }
 
 // Close closes the clients connection
 func (c *Client) Close() {
-	c.conn.Close()
-	fmt.Printf("Closed the connection to %s\n", c.server)
+	c.Conn.Close()
+	fmt.Printf("Closed the connection to %s\n", server)
 }
 
 // HandleChat handles incomming chat messages
 func (c *Client) HandleChat(cmdPrefix string) {
-	proto := textproto.NewReader(bufio.NewReader(c.conn))
+	proto := textproto.NewReader(bufio.NewReader(c.Conn))
 
 	for {
 		line, err := proto.ReadLine()
@@ -78,7 +79,7 @@ func (c *Client) HandleChat(cmdPrefix string) {
 		}
 
 		if strings.Contains(line, "PING :tmi.twitch.tv") {
-			fmt.Fprintf(c.conn, "PONG :tmi.twitch.tv\n")
+			fmt.Fprintf(c.Conn, "PONG :tmi.twitch.tv\n")
 		}
 	}
 }
@@ -89,25 +90,21 @@ func (c *Client) DisplayMessage(msg *parser.Message) {
 }
 
 // SendMessage sends message to chat
-func (c *Client) SendMessage(msg string) {
+func (c *Client) SendMessage(msg, channel string) {
 	if msg != "" {
-		fmt.Fprintf(c.conn, "PRIVMSG "+c.channel+" :"+msg+"\n")
+		fmt.Fprintf(c.Conn, "PRIVMSG "+channel+" :"+msg+"\n")
 	}
 }
 
 // NewClient, function generating new client
-func NewClient(nick string, oAuth string, channel string) *Client {
+func NewClient(nick, pass, channel string) *Client {
 	c := Client{
-		server:  "irc.chat.twitch.tv",
-		port:    "6667",
-		nick:    nick,
-		oAuth:   oAuth,
-		channel: channel,
-		conn:    nil,
+		Nick:    nick,
+		Conn:    nil,
 	}
 
 	c.connect()
-	c.login()
+	c.login(pass, channel)
 
 	return &c
 }

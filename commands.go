@@ -14,21 +14,21 @@ var Commands = map[string]func(c *client.Client, pc *ParsedCommand){
 
 	"color": func(c *client.Client, pc *ParsedCommand) {
 		msg := fmt.Sprintf("The color of @%s is %s", pc.user.Name, pc.user.Color)
-		c.SendMessage(msg)
+    c.SendMessage(msg, pc.Channel)
 	},
 
 	"commands": func(c *client.Client, pc *ParsedCommand) {
-		c.SendMessage("Go to bot-anders14-commands.vercel.app for a list of all the commands and what they do")
+		c.SendMessage("Go to bot-anders14-commands.vercel.app for a list of all the commands and what they do", pc.Channel)
 	},
 
 	"joke": func(c *client.Client, pc *ParsedCommand) {
 		joke := joke.FetchJoke().Joke
-		c.SendMessage(joke)
+		c.SendMessage(joke, pc.Channel)
 	},
 
 	"ping": func(c *client.Client, pc *ParsedCommand) {
 		msg := fmt.Sprintf("Pong, @%s", pc.user.Name)
-		c.SendMessage(msg)
+		c.SendMessage(msg, pc.Channel)
 	},
 
 	"rps": func(c *client.Client, pc *ParsedCommand) {
@@ -37,11 +37,11 @@ var Commands = map[string]func(c *client.Client, pc *ParsedCommand){
 		}
 		usermove := pc.args[0]
 		msg := rps.Play(usermove, pc.user.Name)
-		c.SendMessage(msg)
+		c.SendMessage(msg, pc.Channel)
 	},
 
 	"today": func(c *client.Client, pc *ParsedCommand) {
 		trivia := trivia.FetchToday()
-		c.SendMessage(trivia)
+		c.SendMessage(trivia, pc.Channel)
 	},
 }

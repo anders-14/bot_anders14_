@@ -13,6 +13,7 @@ type ParsedCommand struct {
 	name string
 	args []string
 	user parser.User
+  Channel string
 }
 
 // ParseMessageToCommand -> parses a Message to a ParsedCommand
@@ -25,6 +26,7 @@ func ParseMessageToCommand(m *parser.Message) *ParsedCommand {
 		name: name,
 		args: args,
 		user: m.User,
+    Channel: m.Channel,
 	}
 }
 
