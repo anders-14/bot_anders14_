@@ -17,11 +17,11 @@ var Commands = map[string]func(pc *message.Command) string{
 	},
 
 	"commands": func(pc *message.Command) string {
-    return fmt.Sprintf("@%s, go to bot-anders14-commands.vercel.app to find all the commands")
+		return fmt.Sprintf("@%s, go to bot-anders14-commands.vercel.app to find all the commands")
 	},
 
 	"joke": func(pc *message.Command) string {
-    return joke.FetchJoke().Joke
+		return joke.FetchJoke().Joke
 	},
 
 	"ping": func(pc *message.Command) string {

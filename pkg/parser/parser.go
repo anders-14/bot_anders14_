@@ -43,17 +43,17 @@ func parseBadges(badgeString string) map[string]string {
 }
 
 func ParseCommand(msg *message.Message, cmdPrefix string) *message.Command {
-  prefixLen := len(cmdPrefix)
+	prefixLen := len(cmdPrefix)
 	splitMessage := strings.Split(msg.Content, " ")
 	name := strings.ToLower(splitMessage[0][prefixLen:])
 	args := splitMessage[1:]
 
 	return &message.Command{
-    Name: name,
-    Args: args,
-    User: msg.User,
-    Channel: msg.Channel,
-  }
+		Name:    name,
+		Args:    args,
+		User:    msg.User,
+		Channel: msg.Channel,
+	}
 }
 
 // ParseMessage parses irc message into message object

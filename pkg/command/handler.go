@@ -9,10 +9,10 @@ import (
 func HandleCommand(pc *message.Command) string {
 	if f, ok := Commands[pc.Name]; ok {
 		msg := f(pc)
-    return msg
+		return msg
 	} else {
 		fmt.Printf("Error: %s is not a command\n", pc.Name)
 	}
 
-  return ""
+	return ""
 }

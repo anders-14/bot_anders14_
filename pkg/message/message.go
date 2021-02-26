@@ -8,10 +8,10 @@ type Message struct {
 }
 
 type Command struct {
-  Name string
-  Args []string
-  User User
-  Channel string
+	Name    string
+	Args    []string
+	User    User
+	Channel string
 }
 
 type User struct {
