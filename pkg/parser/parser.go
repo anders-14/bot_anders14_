@@ -56,22 +56,22 @@ func ParseMessage(line, cmdPrfix string) *Message {
 	}
 	badges := parseBadges(badgeString)
 
-  _, isBroad := badges["broadcaster"]
-  _, isMod := badges["moderator"]
-  _, isVip := badges["vip"]
-  _, isSub := badges["subscriber"]
+	_, isBroad := badges["broadcaster"]
+	_, isMod := badges["moderator"]
+	_, isVip := badges["vip"]
+	_, isSub := badges["subscriber"]
 
 	msg := Message{
 		Content: content,
 		User: User{
-			ID: tags["user-id"],
-      Name: username,
-      Badges: badges,
-      Color: tags["color"],
-      IsBroadcaster: isBroad,
-      IsModerator: isMod,
-      IsVip: isVip,
-      IsSubscriber: isSub,
+			ID:            tags["user-id"],
+			Name:          username,
+			Badges:        badges,
+			Color:         tags["color"],
+			IsBroadcaster: isBroad,
+			IsModerator:   isMod,
+			IsVip:         isVip,
+			IsSubscriber:  isSub,
 		},
 		Channel:   channelname,
 		IsCommand: strings.HasPrefix(content, cmdPrfix),

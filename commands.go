@@ -12,7 +12,7 @@ import (
 var Commands = map[string]func(c *Client, pc *ParsedCommand){
 
 	"color": func(c *Client, pc *ParsedCommand) {
-		msg := fmt.Sprintf("The color of @%s is %s", pc.user.displayname, pc.user.color)
+		msg := fmt.Sprintf("The color of @%s is %s", pc.user.Name, pc.user.Color)
 		c.SendMessage(msg)
 	},
 
@@ -26,7 +26,7 @@ var Commands = map[string]func(c *Client, pc *ParsedCommand){
 	},
 
 	"ping": func(c *Client, pc *ParsedCommand) {
-		msg := fmt.Sprintf("Pong, @%s", pc.user.displayname)
+		msg := fmt.Sprintf("Pong, @%s", pc.user.Name)
 		c.SendMessage(msg)
 	},
 
@@ -35,7 +35,7 @@ var Commands = map[string]func(c *Client, pc *ParsedCommand){
 			return
 		}
 		usermove := pc.args[0]
-		msg := rps.Play(usermove, pc.user.displayname)
+		msg := rps.Play(usermove, pc.user.Name)
 		c.SendMessage(msg)
 	},
 

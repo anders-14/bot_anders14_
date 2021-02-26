@@ -26,7 +26,7 @@ func main() {
 	botOauth := os.Getenv("BOT_OAUTH")
 
 	client := NewClient(botName, botOauth, fmt.Sprintf("#%s", *channelName))
-  defer client.Close()
+	defer client.Close()
 
 	client.HandleChat()
 }

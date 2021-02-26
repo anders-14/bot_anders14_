@@ -8,6 +8,8 @@ import (
 	"net/textproto"
 	"strings"
 	"time"
+
+	"github.com/anders-14/bot_anders14_/pkg/parser"
 )
 
 // Client object holding info about the connection
@@ -60,19 +62,18 @@ func (c *Client) HandleChat() {
 	for {
 		line, err := proto.ReadLine()
 		if err != nil {
-      log.Fatalf("err: %s", err)
+			log.Fatalf("err: %s", err)
 			break
 		}
 
-    fmt.Println(line)
-
 		if strings.Contains(line, "PRIVMSG") {
-			message := ParseMessage(line)
+			message := parser.ParseMessage(line, *commandPrefix)
 			c.DisplayMessage(message)
 
-			if message.isCommand {
-				parsedCommand := ParseMessageToCommand(message)
-				HandleCommand(c, parsedCommand)
+			if message.IsCommand {
+				// parsedCommand := ParseMessageToCommand(message)
+				// HandleCommand(c, parsedCommand)
+				fmt.Println("its a command")
 			}
 		}
 
@@ -83,8 +84,8 @@ func (c *Client) HandleChat() {
 }
 
 // DisplayMessage displays incomming messages to the terminal
-func (c *Client) DisplayMessage(msg *Message) {
-	fmt.Printf("%s %s: %s\n", msg.channel, msg.user.displayname, msg.content)
+func (c *Client) DisplayMessage(msg *parser.Message) {
+	fmt.Printf("#%s %s: %s\n", msg.Channel, msg.User.Name, msg.Content)
 }
 
 // SendMessage sends message to chat
@@ -96,7 +97,7 @@ func (c *Client) SendMessage(msg string) {
 
 // NewClient, function generating new client
 func NewClient(nick string, oAuth string, channel string) *Client {
-  c := Client{
+	c := Client{
 		server:  "irc.chat.twitch.tv",
 		port:    "6667",
 		nick:    nick,
@@ -105,8 +106,8 @@ func NewClient(nick string, oAuth string, channel string) *Client {
 		conn:    nil,
 	}
 
-  c.connect()
-  c.login()
+	c.connect()
+	c.login()
 
-  return &c
+	return &c
 }
