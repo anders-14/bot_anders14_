@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/anders-14/bot_anders14_/pkg/client"
 	"github.com/joho/godotenv"
 )
 
@@ -25,8 +26,8 @@ func main() {
 	botName := os.Getenv("BOT_NAME")
 	botOauth := os.Getenv("BOT_OAUTH")
 
-	client := NewClient(botName, botOauth, fmt.Sprintf("#%s", *channelName))
-	defer client.Close()
+	c := client.NewClient(botName, botOauth, fmt.Sprintf("#%s", *channelName))
+	defer c.Close()
 
-	client.HandleChat()
+	c.HandleChat(*commandPrefix)
 }

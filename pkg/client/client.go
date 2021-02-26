@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"bufio"
@@ -56,7 +56,7 @@ func (c *Client) Close() {
 }
 
 // HandleChat handles incomming chat messages
-func (c *Client) HandleChat() {
+func (c *Client) HandleChat(cmdPrefix string) {
 	proto := textproto.NewReader(bufio.NewReader(c.conn))
 
 	for {
@@ -67,7 +67,7 @@ func (c *Client) HandleChat() {
 		}
 
 		if strings.Contains(line, "PRIVMSG") {
-			message := parser.ParseMessage(line, *commandPrefix)
+			message := parser.ParseMessage(line, cmdPrefix)
 			c.DisplayMessage(message)
 
 			if message.IsCommand {

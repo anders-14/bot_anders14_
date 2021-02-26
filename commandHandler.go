@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/anders-14/bot_anders14_/pkg/client"
 	"github.com/anders-14/bot_anders14_/pkg/parser"
 )
 
@@ -28,7 +29,7 @@ func ParseMessageToCommand(m *parser.Message) *ParsedCommand {
 }
 
 // HandleCommand -> handles the execution of an incomming command
-func HandleCommand(c *Client, pc *ParsedCommand) {
+func HandleCommand(c *client.Client, pc *ParsedCommand) {
 	if f, ok := Commands[pc.name]; ok {
 		f(c, pc)
 	} else {
