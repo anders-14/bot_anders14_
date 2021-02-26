@@ -5,6 +5,8 @@ import (
 	"log"
 	"regexp"
 	"strings"
+
+	"github.com/anders-14/bot_anders14_/pkg/message"
 )
 
 var (
@@ -40,8 +42,22 @@ func parseBadges(badgeString string) map[string]string {
 	return parseList(badgeString, ",", "/")
 }
 
+func ParseCommand(msg *message.Message, cmdPrefix string) *message.Command {
+  prefixLen := len(cmdPrefix)
+	splitMessage := strings.Split(msg.Content, " ")
+	name := strings.ToLower(splitMessage[0][prefixLen:])
+	args := splitMessage[1:]
+
+	return &message.Command{
+    Name: name,
+    Args: args,
+    User: msg.User,
+    Channel: msg.Channel,
+  }
+}
+
 // ParseMessage parses irc message into message object
-func ParseMessage(line, cmdPrfix string) *Message {
+func ParseMessage(line, cmdPrfix string) *message.Message {
 	matches := contentRegex.FindAllStringSubmatch(line, 5)[0]
 
 	tagString := matches[1]
@@ -61,9 +77,9 @@ func ParseMessage(line, cmdPrfix string) *Message {
 	_, isVip := badges["vip"]
 	_, isSub := badges["subscriber"]
 
-	msg := Message{
+	msg := message.Message{
 		Content: content,
-		User: User{
+		User: message.User{
 			ID:            tags["user-id"],
 			Name:          username,
 			Badges:        badges,
@@ -78,6 +94,3 @@ func ParseMessage(line, cmdPrfix string) *Message {
 	}
 	return &msg
 }
-
-// @badge-info=;badges=broadcaster/1;client-nonce=cd9e3395f945b2d5c92680572bc64a41;color=#FF7F50;display-name=anders14_;emotes=;flags=;id=12297ad5-e164-45da-a9a5-dc46446aadfe;mod=0;room-id=207792212;subscriber=0;tmi-sent-ts=1614326479328;turbo=0;user-id=207792212;user-type=
-// :anders14_!anders14_@anders14_.tmi.twitch.tv PRIVMSG #anders14_ :test

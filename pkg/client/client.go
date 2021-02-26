@@ -9,18 +9,22 @@ import (
 	"strings"
 	"time"
 
+	"github.com/anders-14/bot_anders14_/pkg/command"
+	"github.com/anders-14/bot_anders14_/pkg/message"
 	"github.com/anders-14/bot_anders14_/pkg/parser"
 )
 
 var (
-  server string = "irc.chat.twitch.tv"
-  port string = "6667"
+	server string = "irc.chat.twitch.tv"
+	port   string = "6667"
 )
 
 // Client object holding info about the connection
 type Client struct {
-	Nick    string
-	Conn    net.Conn
+	Nick          string
+	Channel       string
+	CommandPrefix string
+	Conn          net.Conn
 }
 
 func (c *Client) connect() {
@@ -57,7 +61,7 @@ func (c *Client) Close() {
 }
 
 // HandleChat handles incomming chat messages
-func (c *Client) HandleChat(cmdPrefix string) {
+func (c *Client) HandleChat() {
 	proto := textproto.NewReader(bufio.NewReader(c.Conn))
 
 	for {
@@ -68,13 +72,13 @@ func (c *Client) HandleChat(cmdPrefix string) {
 		}
 
 		if strings.Contains(line, "PRIVMSG") {
-			message := parser.ParseMessage(line, cmdPrefix)
+			message := parser.ParseMessage(line, c.CommandPrefix)
 			c.DisplayMessage(message)
 
 			if message.IsCommand {
-				// parsedCommand := ParseMessageToCommand(message)
-				// HandleCommand(c, parsedCommand)
-				fmt.Println("its a command")
+				parsedCmd := parser.ParseCommand(message, c.CommandPrefix)
+				msg := command.HandleCommand(parsedCmd)
+				c.SendMessage(msg, c.Channel)
 			}
 		}
 
@@ -85,7 +89,7 @@ func (c *Client) HandleChat(cmdPrefix string) {
 }
 
 // DisplayMessage displays incomming messages to the terminal
-func (c *Client) DisplayMessage(msg *parser.Message) {
+func (c *Client) DisplayMessage(msg *message.Message) {
 	fmt.Printf("#%s %s: %s\n", msg.Channel, msg.User.Name, msg.Content)
 }
 
@@ -97,10 +101,12 @@ func (c *Client) SendMessage(msg, channel string) {
 }
 
 // NewClient, function generating new client
-func NewClient(nick, pass, channel string) *Client {
+func NewClient(nick, pass, channel, prefix string) *Client {
 	c := Client{
-		Nick:    nick,
-		Conn:    nil,
+		Nick:          nick,
+		Channel:       channel,
+		CommandPrefix: prefix,
+		Conn:          nil,
 	}
 
 	c.connect()

@@ -26,8 +26,8 @@ func main() {
 	botName := os.Getenv("BOT_NAME")
 	botOauth := os.Getenv("BOT_OAUTH")
 
-	c := client.NewClient(botName, botOauth, fmt.Sprintf("#%s", *channelName))
+	c := client.NewClient(botName, botOauth, fmt.Sprintf("#%s", *channelName), *commandPrefix)
 	defer c.Close()
 
-	c.HandleChat(*commandPrefix)
+	c.HandleChat()
 }
