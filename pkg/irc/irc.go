@@ -9,23 +9,16 @@ import (
 )
 
 // Read irc and put it onto a channel
-func Read(reader io.Reader) <-chan string {
-	messages := make(chan string, 100)
+func Read(reader io.Reader, raw chan string) {
 	proto := textproto.NewReader(bufio.NewReader(reader))
 
-	go func() {
-		defer close(messages)
-		for {
-			line, err := proto.ReadLine()
-			if err != nil {
-				log.Fatalf("err: %s", err)
-			}
-
-			messages <- line
+	for {
+		line, err := proto.ReadLine()
+		if err != nil {
+			log.Fatalf("err: %s", err)
 		}
-	}()
-
-	return messages
+		raw <- line
+	}
 }
 
 // Send message to irc
@@ -39,6 +32,7 @@ func Send(writer io.Writer, msg, channel string) error {
 	return nil
 }
 
+// Pong the server to keep the connection open
 func Pong(writer io.Writer) {
 	fmt.Fprintf(writer, "PONG :tmi.twitch.tv\n")
 }

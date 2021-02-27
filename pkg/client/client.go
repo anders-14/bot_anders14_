@@ -2,7 +2,6 @@ package client
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"time"
 
@@ -60,61 +59,34 @@ func (c *Client) Close() {
 
 // HandleChat handles incomming chat messages
 func (c *Client) HandleChat() {
-	rawMessages := irc.Read(c.Conn)
+	// Channels to communicate between go routines
+	rawMessageChan := make(chan string, 100)
+	messageChan := make(chan *message.Message, 100)
+	commandChan := make(chan *message.Command, 100)
+	pingChan := make(chan string)
 
-	messages := make(chan *message.Message, 100)
-	commands := make(chan *message.Command, 100)
-	pings := make(chan string)
-
-	go parser.Parse(rawMessages, messages, commands, pings, c.CommandPrefix)
+	// Read and parse messages
+	go irc.Read(c.Conn, rawMessageChan)
+	go parser.Parse(rawMessageChan, messageChan, commandChan, pingChan, c.CommandPrefix)
 
 	for {
 		select {
-		case cmd := <-commands:
+		case cmd := <-commandChan:
 			res := command.HandleCommand(cmd)
-			c.SendMessage(res, c.Channel)
-		case msg := <-messages:
+			if err := irc.Send(c.Conn, res, cmd.Channel); err != nil {
+				fmt.Printf("err: %s", err)
+			}
+		case msg := <-messageChan:
 			c.DisplayMessage(msg)
-		case <-pings:
+		case <-pingChan:
 			irc.Pong(c.Conn)
 		}
 	}
-
-	// proto := textproto.NewReader(bufio.NewReader(c.Conn))
-
-	// for {
-	// 	line, err := proto.ReadLine()
-	// 	if err != nil {
-	// 		log.Fatalf("err: %s", err)
-	// 	}
-
-	// 	if strings.Contains(line, "PRIVMSG") {
-	// 		message := parser.ParseMessage(line, c.CommandPrefix)
-	// 		c.DisplayMessage(message)
-
-	// 		if message.IsCommand {
-	// 			parsedCmd := parser.ParseCommand(message, c.CommandPrefix)
-	// 			msg := command.HandleCommand(parsedCmd)
-	// 			c.SendMessage(msg, c.Channel)
-	// 		}
-	// 	}
-
-	// 	if strings.Contains(line, "PING :tmi.twitch.tv") {
-	// 		fmt.Fprintf(c.Conn, "PONG :tmi.twitch.tv\n")
-	// 	}
-	// }
 }
 
 // DisplayMessage displays incomming messages to the terminal
 func (c *Client) DisplayMessage(msg *message.Message) {
 	fmt.Printf("#%s %s: %s\n", msg.Channel, msg.User.Name, msg.Content)
-}
-
-// SendMessage sends message to chat
-func (c *Client) SendMessage(msg, channel string) {
-	if err := irc.Send(c.Conn, msg, channel); err != nil {
-		log.Fatalf("err: %s", err)
-	}
 }
 
 // NewClient, function generating new client

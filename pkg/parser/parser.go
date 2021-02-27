@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	contentRegex = regexp.MustCompile(`@([^\s]+)\s:([^!]+)![^#]+#([^\s]+)\s:(.+)`)
+	parserRegex = regexp.MustCompile(`@([^\s]+)\s:([^!]+)![^#]+#([^\s]+)\s:(.+)`)
 )
 
 func isPrivateMessage(line string) bool {
@@ -41,7 +41,7 @@ func parseBadges(badgeString string) map[string]string {
 	return parseList(badgeString, ",", "/")
 }
 
-func ParseCommand(msg *message.Message, cmdPrefix string) *message.Command {
+func parseCommand(msg *message.Message, cmdPrefix string) *message.Command {
 	prefixLen := len(cmdPrefix)
 	splitMessage := strings.Split(msg.Content, " ")
 	name := strings.ToLower(splitMessage[0][prefixLen:])
@@ -56,7 +56,7 @@ func ParseCommand(msg *message.Message, cmdPrefix string) *message.Command {
 }
 
 func parseMessage(line, cmdPrfix string) *message.Message {
-	matches := contentRegex.FindAllStringSubmatch(line, 5)[0]
+	matches := parserRegex.FindAllStringSubmatch(line, 5)[0]
 
 	tagString := matches[1]
 	username := matches[2]
@@ -93,6 +93,7 @@ func parseMessage(line, cmdPrfix string) *message.Message {
 	return &msg
 }
 
+// Parse raw irc messages
 func Parse(raw <-chan string, msgs chan *message.Message, cmds chan *message.Command, pings chan string, cmdPrefix string) {
 	for {
 		line := <-raw
@@ -100,7 +101,7 @@ func Parse(raw <-chan string, msgs chan *message.Message, cmds chan *message.Com
 			msg := parseMessage(line, cmdPrefix)
 			msgs <- msg
 			if msg.IsCommand {
-				cmd := ParseCommand(msg, cmdPrefix)
+				cmd := parseCommand(msg, cmdPrefix)
 				cmds <- cmd
 			}
 		} else if isPingMessage(line) {
