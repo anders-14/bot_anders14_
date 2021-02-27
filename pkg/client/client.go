@@ -19,7 +19,7 @@ var (
 // Client object holding info about the connection
 type Client struct {
 	Nick          string
-	Channel       string
+	Channels      []string
 	CommandPrefix string
 	Conn          net.Conn
 }
@@ -40,15 +40,17 @@ func (c *Client) connect() {
 	fmt.Printf("Successfully connected to %s\n", server)
 }
 
-func (c *Client) login(pass, channel string) {
+func (c *Client) login(pass string) {
 	fmt.Fprintf(c.Conn, "PASS %s\n", pass)
 	fmt.Fprintf(c.Conn, "NICK %s\n", c.Nick)
 
-	fmt.Fprintf(c.Conn, "JOIN #%s\n", channel)
-	fmt.Printf("Joined %s\n\n", channel)
-
 	// Getting tags with the messages
 	fmt.Fprintf(c.Conn, "CAP REQ :twitch.tv/tags\n")
+}
+
+func (c *Client) join(channel string) {
+	fmt.Fprintf(c.Conn, "JOIN #%s\n", channel)
+	fmt.Printf("Joined #%s\n", channel)
 }
 
 // Close closes the clients connection
@@ -90,16 +92,20 @@ func (c *Client) DisplayMessage(msg *message.Message) {
 }
 
 // NewClient, function generating new client
-func NewClient(nick, pass, channel, prefix string) *Client {
+func NewClient(nick, pass string, channels []string, prefix string) *Client {
 	c := Client{
 		Nick:          nick,
-		Channel:       channel,
+		Channels:      channels,
 		CommandPrefix: prefix,
 		Conn:          nil,
 	}
 
 	c.connect()
-	c.login(pass, channel)
+	c.login(pass)
+
+	for _, channel := range channels {
+		c.join(channel)
+	}
 
 	return &c
 }
