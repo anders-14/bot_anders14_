@@ -38,3 +38,7 @@ func Send(writer io.Writer, msg, channel string) error {
 
 	return nil
 }
+
+func Pong(writer io.Writer) {
+	fmt.Fprintf(writer, "PONG :tmi.twitch.tv\n")
+}

@@ -1,15 +1,13 @@
 package client
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"net"
-	"net/textproto"
-	"strings"
 	"time"
 
 	"github.com/anders-14/bot_anders14_/pkg/command"
+	"github.com/anders-14/bot_anders14_/pkg/irc"
 	"github.com/anders-14/bot_anders14_/pkg/message"
 	"github.com/anders-14/bot_anders14_/pkg/parser"
 )
@@ -47,7 +45,7 @@ func (c *Client) login(pass, channel string) {
 	fmt.Fprintf(c.Conn, "PASS %s\n", pass)
 	fmt.Fprintf(c.Conn, "NICK %s\n", c.Nick)
 
-	fmt.Fprintf(c.Conn, "JOIN %s\n", channel)
+	fmt.Fprintf(c.Conn, "JOIN #%s\n", channel)
 	fmt.Printf("Joined %s\n\n", channel)
 
 	// Getting tags with the messages
@@ -62,30 +60,49 @@ func (c *Client) Close() {
 
 // HandleChat handles incomming chat messages
 func (c *Client) HandleChat() {
-	proto := textproto.NewReader(bufio.NewReader(c.Conn))
+	rawMessages := irc.Read(c.Conn)
+
+	messages := make(chan *message.Message, 100)
+	commands := make(chan *message.Command, 100)
+	pings := make(chan string)
+
+	go parser.Parse(rawMessages, messages, commands, pings, c.CommandPrefix)
 
 	for {
-		line, err := proto.ReadLine()
-		if err != nil {
-			log.Fatalf("err: %s", err)
-			break
-		}
-
-		if strings.Contains(line, "PRIVMSG") {
-			message := parser.ParseMessage(line, c.CommandPrefix)
-			c.DisplayMessage(message)
-
-			if message.IsCommand {
-				parsedCmd := parser.ParseCommand(message, c.CommandPrefix)
-				msg := command.HandleCommand(parsedCmd)
-				c.SendMessage(msg, c.Channel)
-			}
-		}
-
-		if strings.Contains(line, "PING :tmi.twitch.tv") {
-			fmt.Fprintf(c.Conn, "PONG :tmi.twitch.tv\n")
+		select {
+		case cmd := <-commands:
+			res := command.HandleCommand(cmd)
+			c.SendMessage(res, c.Channel)
+		case msg := <-messages:
+			c.DisplayMessage(msg)
+		case <-pings:
+			irc.Pong(c.Conn)
 		}
 	}
+
+	// proto := textproto.NewReader(bufio.NewReader(c.Conn))
+
+	// for {
+	// 	line, err := proto.ReadLine()
+	// 	if err != nil {
+	// 		log.Fatalf("err: %s", err)
+	// 	}
+
+	// 	if strings.Contains(line, "PRIVMSG") {
+	// 		message := parser.ParseMessage(line, c.CommandPrefix)
+	// 		c.DisplayMessage(message)
+
+	// 		if message.IsCommand {
+	// 			parsedCmd := parser.ParseCommand(message, c.CommandPrefix)
+	// 			msg := command.HandleCommand(parsedCmd)
+	// 			c.SendMessage(msg, c.Channel)
+	// 		}
+	// 	}
+
+	// 	if strings.Contains(line, "PING :tmi.twitch.tv") {
+	// 		fmt.Fprintf(c.Conn, "PONG :tmi.twitch.tv\n")
+	// 	}
+	// }
 }
 
 // DisplayMessage displays incomming messages to the terminal
@@ -95,8 +112,8 @@ func (c *Client) DisplayMessage(msg *message.Message) {
 
 // SendMessage sends message to chat
 func (c *Client) SendMessage(msg, channel string) {
-	if msg != "" {
-		fmt.Fprintf(c.Conn, "PRIVMSG "+channel+" :"+msg+"\n")
+	if err := irc.Send(c.Conn, msg, channel); err != nil {
+		log.Fatalf("err: %s", err)
 	}
 }
 

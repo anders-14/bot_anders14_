@@ -1,8 +1,6 @@
 package parser
 
 import (
-	// "fmt"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -57,8 +55,7 @@ func ParseCommand(msg *message.Message, cmdPrefix string) *message.Command {
 	}
 }
 
-// ParseMessage parses irc message into message object
-func ParseMessage(line, cmdPrfix string) *message.Message {
+func parseMessage(line, cmdPrfix string) *message.Message {
 	matches := contentRegex.FindAllStringSubmatch(line, 5)[0]
 
 	tagString := matches[1]
@@ -94,4 +91,20 @@ func ParseMessage(line, cmdPrfix string) *message.Message {
 		IsCommand: strings.HasPrefix(content, cmdPrfix),
 	}
 	return &msg
+}
+
+func Parse(raw <-chan string, msgs chan *message.Message, cmds chan *message.Command, pings chan string, cmdPrefix string) {
+	for {
+		line := <-raw
+		if isPrivateMessage(line) {
+			msg := parseMessage(line, cmdPrefix)
+			msgs <- msg
+			if msg.IsCommand {
+				cmd := ParseCommand(msg, cmdPrefix)
+				cmds <- cmd
+			}
+		} else if isPingMessage(line) {
+			pings <- line
+		}
+	}
 }
