@@ -2,6 +2,7 @@ package parser
 
 import (
 	// "fmt"
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -61,8 +62,8 @@ func ParseMessage(line, cmdPrfix string) *message.Message {
 	matches := contentRegex.FindAllStringSubmatch(line, 5)[0]
 
 	tagString := matches[1]
-	channelname := matches[2]
-	username := matches[3]
+	username := matches[2]
+	channelname := matches[3]
 	content := matches[4]
 
 	tags := parseTags(tagString)
