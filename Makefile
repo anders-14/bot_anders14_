@@ -1,4 +1,5 @@
 build:
+	goimports -w -l .
 	go build
 
 fmt:
