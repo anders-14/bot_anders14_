@@ -41,7 +41,7 @@ func userWon(usermove, botmove string) bool {
 	return false
 }
 
-// Play, given a usermove and name plays a round of rps
+// Play plays a game of rock paper scissors given a usermove and username
 func Play(usermove, username string) string {
 	loweredMove := strings.ToLower(usermove)
 

@@ -1,5 +1,6 @@
 package message
 
+// Message is parsed irc messages
 type Message struct {
 	Content   string
 	User      User
@@ -7,6 +8,7 @@ type Message struct {
 	IsCommand bool
 }
 
+// Command is a parsed bot command
 type Command struct {
 	Name    string
 	Args    []string
@@ -14,6 +16,7 @@ type Command struct {
 	Channel string
 }
 
+// User parsed from the irc message tags
 type User struct {
 	ID            string
 	Name          string

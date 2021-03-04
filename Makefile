@@ -1,9 +1,11 @@
 build:
-	goimports -w -l .
 	go build
 
 fmt:
 	goimports -w -l .
+
+lint:
+	golint ./...
 
 image:
 	docker image rm twitch-bot && \

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	BASE_URL = "http://numbersapi.com/"
+	baseURL = "http://numbersapi.com/"
 )
 
 func currentDate() string {
@@ -17,10 +17,10 @@ func currentDate() string {
 	return fmt.Sprintf("%d/%d", int(month), day)
 }
 
-// FetchToday, gets trivia for today
+// FetchToday gets trivia for the current day
 func FetchToday() string {
 	today := currentDate()
-	url := BASE_URL + today
+	url := baseURL + today
 
 	res, err := http.Get(url)
 	if err != nil {

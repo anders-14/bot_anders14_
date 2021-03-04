@@ -91,7 +91,7 @@ func (c *Client) DisplayMessage(msg *message.Message) {
 	fmt.Printf("#%s %s: %s\n", msg.Channel, msg.User.Name, msg.Content)
 }
 
-// NewClient, function generating new client
+// NewClient generates a new client
 func NewClient(nick, pass string, channels []string, prefix string) *Client {
 	c := Client{
 		Nick:          nick,

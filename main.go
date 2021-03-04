@@ -12,7 +12,7 @@ import (
 
 var (
 	// Can either enter a single channel or a commaseperated list of channels (no spaces)
-	channelFlag = flag.String("channel", "anders14_", "Channels to connect to seperated by comma")
+	channelFlag = flag.String("channel", "anders14_", "Channels to connect to, separated by comma")
 	prefixFlag  = flag.String("prefix", "!", "Prefix to put in front of commands")
 )
 

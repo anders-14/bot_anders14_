@@ -9,7 +9,7 @@ import (
 	"github.com/anders-14/bot_anders14_/pkg/trivia"
 )
 
-// Commands, map from command name to function
+// Commands contains all the available commands
 var Commands = map[string]func(pc *message.Command) string{
 
 	"color": func(pc *message.Command) string {
