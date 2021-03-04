@@ -2,11 +2,14 @@
 
 ![go report card](https://goreportcard.com/badge/github.com/anders-14/bot_anders14_)
 
-A twitch chat bot written in go
+A twitch chat bot written in go. To see all available commands head on
+over to <https://bot-anders-commands.vercel.app>.
 
-It has shitty jokes and unfun fun facts, all you want in a bot
+## APIs
 
-## Commands
+Some of the commands are fetching data from APIs. The APIs used are
+listed under.
 
-<https://bot-anders14-commands.vercel.app>
+- <https://icanhazdadjoke.com/>
+- <http://numbersapi.com/>
 
