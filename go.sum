@@ -1,2 +1,4 @@
+github.com/anders-14/gocolor v0.0.0-20210305234054-459b916adbcf h1:oQVl2H4leS46VKKd4h1yJxX2Ki/QlgqcO/SRjJiijNg=
+github.com/anders-14/gocolor v0.0.0-20210305234054-459b916adbcf/go.mod h1:NBmcwIYGDvwoEvr8TuZoFq2JG/K0GjW2Gk7FIPdhsbM=
 github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
