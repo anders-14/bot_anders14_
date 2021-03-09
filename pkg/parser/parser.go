@@ -22,6 +22,9 @@ func isPingMessage(line string) bool {
 
 func parseList(str, listSep, valSep string) map[string]string {
 	itemMap := make(map[string]string)
+	if str == "" {
+		return itemMap
+	}
 
 	items := strings.Split(str, listSep)
 

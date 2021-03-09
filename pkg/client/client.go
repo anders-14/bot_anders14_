@@ -9,7 +9,7 @@ import (
 	"github.com/anders-14/bot_anders14_/pkg/irc"
 	"github.com/anders-14/bot_anders14_/pkg/message"
 	"github.com/anders-14/bot_anders14_/pkg/parser"
-  "github.com/anders-14/gocolor"
+	"github.com/anders-14/gocolor"
 )
 
 var (
@@ -89,8 +89,10 @@ func (c *Client) HandleChat() {
 
 // DisplayMessage displays incomming messages to the terminal
 func (c *Client) DisplayMessage(msg *message.Message) {
-  gocolor.Printf(gocolor.PurpleFg, "#%s", msg.Channel)
-	fmt.Printf(" %s: %s\n", msg.User.Name, msg.Content)
+	if msg.User.Color == "" {
+		msg.User.Color = "#aa11dd"
+	}
+	gocolor.Printf("#%s ${f%s}%s${reset}: %s\n", msg.Channel, msg.User.Color, msg.User.Name, msg.Content)
 }
 
 // NewClient generates a new client
