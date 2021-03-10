@@ -12,10 +12,6 @@ import (
 // Commands contains all the available commands
 var Commands = map[string]func(pc *message.Command) string{
 
-	"color": func(pc *message.Command) string {
-		return fmt.Sprintf("The color of @%s is %s", pc.User.Name, pc.User.Color)
-	},
-
 	"commands": func(pc *message.Command) string {
 		return fmt.Sprintf("@%s, go to bot-anders14-commands.vercel.app to find all the commands", pc.User.Name)
 	},
