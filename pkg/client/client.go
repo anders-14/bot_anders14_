@@ -76,8 +76,10 @@ func (c *Client) HandleChat() {
 		select {
 		case cmd := <-commandChan:
 			res := command.HandleCommand(cmd)
-			if err := irc.Send(c.Conn, res, cmd.Channel); err != nil {
-				fmt.Printf("err: %s", err)
+			if res != "" {
+				if err := irc.Send(c.Conn, res, cmd.Channel); err != nil {
+					fmt.Printf("err: %s", err)
+				}
 			}
 		case msg := <-messageChan:
 			c.DisplayMessage(msg)
